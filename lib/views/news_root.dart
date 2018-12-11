@@ -11,11 +11,11 @@ class NewsView extends StatefulWidget {
 
 
 
-/// TODO: add logic to parse html pages from yar-zoo.ru
 class _NewsViewState extends State<NewsView> {
   //List with news
   List<News> _newsList = [];
 
+  var listKey = Key('ListViewKey');
   Future<List<News>> news;
 
 
@@ -47,35 +47,45 @@ class _NewsViewState extends State<NewsView> {
           ),
         ],
       ),
-      body: FutureBuilder<List<News>>(
-        future: news,
+      body: getFutureBuilder(),
 
-        builder: (context, snapshot) {
-          //If downloading finished
-          if (snapshot.hasData) {
-            _newsList = snapshot.data;
-            return ListView.builder(
-              padding: EdgeInsets.only(top: 8.0),
-              itemCount: _newsList.length,
-              itemBuilder: (BuildContext context, int pos) {
-                return _NewsListItem(_newsList[pos]);
-              }
-            );
-          } else if (snapshot.hasError) {
-            // If error occured
-            Scaffold.of(context).showSnackBar(
+    );
+  }
+
+
+  Widget getFutureBuilder() {
+    return FutureBuilder<List<News>>(
+      future: news,
+
+      builder: (context, snapshot) {
+        //If downloading finished
+        if (snapshot.hasData) {
+          _newsList = snapshot.data;
+          return getListView();
+        } else if (snapshot.hasError) {
+          // If error occurred
+          Scaffold.of(context).showSnackBar(
               SnackBar(
-                content: Text(snapshot.error.toString()),
-                backgroundColor: Colors.red
+                  content: Text(snapshot.error.toString()),
+                  backgroundColor: Colors.red
               )
-            );
-          }
+          );
+        }
 
-          //Until downloading finishes, show progress bar
-          return getProgressBar();
-        },
-      ),
+        //Until downloading finishes, show progress bar
+        return getProgressBar();
+      },
+    );
+  }
 
+  Widget getListView() {
+    return ListView.builder(
+        key: listKey,
+        padding: EdgeInsets.only(top: 8.0),
+        itemCount: _newsList.length,
+        itemBuilder: (BuildContext context, int pos) {
+          return _NewsListItem(_newsList[pos]);
+        }
     );
   }
 
