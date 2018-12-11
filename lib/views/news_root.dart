@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart';
 
 class NewsView extends StatefulWidget {
   NewsView({Key key}): super(key: key);
@@ -12,11 +14,15 @@ class NewsView extends StatefulWidget {
 /// TODO: add logic to parse html pages from yar-zoo.ru
 class _NewsViewState extends State<NewsView> {
   //List with news
-  List<News> _newsList = [
-    new News('Наблюдайте за спячкой Умы в режиме он-лайн!', '26 декабря 2018 года мы проводили наших медведей Уму и Топу в зимнюю спячку, подготовили им специальные мягкие лежанки и пожелали "Сладких снов"',
-        "http://yar-zoo.ru/media/zoo/images/03122018_aef8d5c7c9516226adefd3078d3188c7.jpg", '26 декабря 2018', "http://yar-zoo.ru/home/news/bearsleep-copy.html"),
-  ];
+  List<News> _newsList = [];
 
+  Future<List<News>> news;
+
+
+  @override
+  void initState() {
+    news = fetchNews();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +47,72 @@ class _NewsViewState extends State<NewsView> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.only(top: 8.0),
-        itemCount: _newsList.length,
-        itemBuilder: (BuildContext context, int pos) {
-          return _NewsListItem(_newsList[pos]);
+      body: FutureBuilder<List<News>>(
+        future: news,
+
+        builder: (context, snapshot) {
+          //If downloading finished
+          if (snapshot.hasData) {
+            _newsList = snapshot.data;
+            return ListView.builder(
+              padding: EdgeInsets.only(top: 8.0),
+              itemCount: _newsList.length,
+              itemBuilder: (BuildContext context, int pos) {
+                return _NewsListItem(_newsList[pos]);
+              }
+            );
+          } else if (snapshot.hasError) {
+            // If error occured
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(snapshot.error.toString()),
+                backgroundColor: Colors.red
+              )
+            );
+          }
+
+          //Until downloading finishes, show progress bar
+          return getProgressBar();
         },
-      )
+      ),
+
     );
+  }
+
+  // Getting circular progress bar
+  Widget getProgressBar() {
+    return Center(
+      child: CircularProgressIndicator(
+        backgroundColor: Colors.green[700],
+        strokeWidth: 3.0,
+      ),
+    );
+  }
+
+
+  /// Fetching news from web-site
+  Future<List<News>> fetchNews() async {
+    final response = await http.get('http://yar-zoo.ru/home/news.html');
+
+    if (response.statusCode == 200) {
+      List<News> news = [];
+
+      //Parsing data from page
+      var dateParse = parse(response.body).getElementsByClassName('element-itempublish_up');
+      var descr = parse(response.body).getElementsByClassName('element-textarea');
+      var docs = parse(response.body).getElementsByClassName('item-image');
+
+      for (int i = 0; i < docs.length; i++) {
+        var pageHref = docs[i].getElementsByTagName('a')[0].attributes['href'];
+        var title = docs[i].getElementsByTagName('a')[0].attributes['title'];
+        var image = docs[i].getElementsByTagName('img')[0].attributes['src'];
+        var description = descr[i].getElementsByTagName('p')[0].text;
+        var date = dateParse[i].text.trim();
+        news.add(new News(title, description, image, date, pageHref));
+      }
+
+      return news;
+    } else throw Exception('Проверьте интернет соединение');
   }
 
 }
