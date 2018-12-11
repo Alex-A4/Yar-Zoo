@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yar_zoo/views/full_news_viewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 
@@ -135,64 +136,74 @@ class _NewsListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        // Text with title of news
-        Container(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Text(
-            _news._title,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 15.0,
-              color: Colors.black,
-            ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => FullNewsViewer(_news.pageUrl)
           ),
-        ),
+        );
+      },
 
-        // Text with date
-        Container(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Text(
-            _news._postDate,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.black45
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Text with title of news
+          Container(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Text(
+              _news._title,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.black,
+              ),
             ),
           ),
-        ),
 
-        //An image which placed into the center
-        Center( child: Container(
-          padding: EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            child: Image.network(
-              _news.imageUrl,
-              width: 200.0,
-              fit: BoxFit.fitWidth,
+          // Text with date
+          Container(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Text(
+              _news._postDate,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.black45
+              ),
             ),
           ),
-        ),
-        ),
 
-        // A description of news
-        Container(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Text(
-            _news._description,
-            textAlign: TextAlign.start,
-            softWrap: true,
-            style: TextStyle(
-              fontSize: 17.0,
-              color: Colors.black45
+          //An image which placed into the center
+          Center( child: Container(
+            padding: EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              child: Image.network(
+                _news.imageUrl,
+                width: 200.0,
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ),
-        ),
-        Divider(),
-      ],
+          ),
+
+          // A description of news
+          Container(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Text(
+              _news._description,
+              textAlign: TextAlign.start,
+              softWrap: true,
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black45
+              ),
+            ),
+          ),
+          Divider(),
+        ],
+      ),
     );
   }
 
