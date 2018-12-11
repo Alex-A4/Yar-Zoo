@@ -22,6 +22,7 @@ class _NewsViewState extends State<NewsView> {
 
   @override
   void initState() {
+    super.initState();
     news = fetchNews();
   }
 
