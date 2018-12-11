@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart';
 
 
 class FullNewsViewer extends StatefulWidget {
@@ -9,20 +11,54 @@ class FullNewsViewer extends StatefulWidget {
   _FullNewsViewerState createState() => _FullNewsViewerState();
 }
 
-
+// TODO: add slivers app bar
 class _FullNewsViewerState extends State<FullNewsViewer>{
-  bool _isDownloaded = false;
+  Future<FullNews> _newsFuture;
 
-  // TODO: add logic to download info
+  FullNews _fullNews;
+
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget._newsUrl);
+    _newsFuture = fetchFullNews(widget._newsUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _isDownloaded ? getScaffold() : getCircularProgress();
+    return FutureBuilder(
+      future: _newsFuture,
+      builder: (context, snapshot){
+        //If data downloaded
+        if (snapshot.hasData) {
+          _fullNews = snapshot.data;
+          return getScaffold();
+        } else if (snapshot.hasError) {
+          //If error occurred
+          Scaffold.of(context).showSnackBar(
+            SnackBar(content: Text('Проверьте интернет соединение'), backgroundColor: Colors.red,),
+          );
+          Navigator.pop(context);
+        }
+
+        //Default widget
+        return getCircularProgress();
+      },
+    );
   }
 
   Widget getCircularProgress() {
-    return CircularProgressIndicator(
-      backgroundColor: Colors.green[700],
-      strokeWidth: 3.0,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Соединение..'),
+      ),
+      body: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.green[700],
+          strokeWidth: 3.0,
+        ),
+      ),
     );
   }
 
@@ -30,46 +66,94 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Full news',
+          _fullNews._title,
           softWrap: false,
           overflow: TextOverflow.ellipsis,
         ),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: <Widget>[
-
-          //HEAD IMAGE OF NEWS
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Image.network(
-              'IMAGE URL',
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-
-          // TEXT OF NEWS
-          Container(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              'TEXT OF NEWS',
-              softWrap: true,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-
-          // CONTENT OF NEWS
-          Container(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Column(
-
-            ),
-          ),
-        ],
-      ),
+      body: getListView(),
     );
   }
+
+  //Getting list view which contains content
+  Widget getListView() {
+    return ListView(
+      shrinkWrap: true,
+      children: <Widget>[
+
+        //HEAD IMAGE OF NEWS
+        Container(
+          padding: EdgeInsets.all(16.0),
+          child: Image.network(
+            _fullNews._headerImageUrl,
+            fit: BoxFit.fitWidth,
+          ),
+        ),
+
+        // TEXT OF NEWS
+        Container(
+          padding: EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Text(
+            _fullNews._text,
+            softWrap: true,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 17.0,
+            ),
+          ),
+        ),
+
+        // CONTENT OF NEWS
+        Container(
+          padding: EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Column(
+
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<FullNews> fetchFullNews(String url) async {
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+
+      //Parsing data from page
+      var dateParse = parse(response.body).getElementsByClassName('element-itempublish_up');
+      var descr = parse(response.body).getElementsByClassName('element-textarea');
+      var docs = parse(response.body).getElementsByClassName('item-image');
+
+      for (int i = 0; i < docs.length; i++) {
+        var pageHref = docs[i].getElementsByTagName('a')[0].attributes['href'];
+        var title = docs[i].getElementsByTagName('a')[0].attributes['title'];
+        var image = docs[i].getElementsByTagName('img')[0].attributes['src'];
+        var description = descr[i].getElementsByTagName('p')[0].text;
+        var date = dateParse[i].text.trim();
+      }
+
+      FullNews news = new FullNews('','','',[]);
+      print('DONE');
+      return news;
+    } else throw Exception('Проверьте интернет соединение');
+  }
+}
+
+
+/// Class describes news with full content
+class FullNews {
+  final String _headerImageUrl;
+  final String _title;
+  final String _text;
+  final List<String> _imageUrls;
+
+  FullNews(this._headerImageUrl, this._title, this._text, this._imageUrls);
+
+  List<String> get imageUrls => _imageUrls;
+
+  String get text => _text;
+
+  String get title => _title;
+
+  String get headerImageUrl => _headerImageUrl;
 }
