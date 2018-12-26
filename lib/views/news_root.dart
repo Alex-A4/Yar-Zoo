@@ -55,6 +55,7 @@ class _NewsViewState extends State<NewsView> {
 
         //If news have been downloaded but internet disabled
         if (NewsStore.getStore().news.isNotEmpty) {
+          _title = 'Новости';
           return getListView();
         }
 
