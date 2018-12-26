@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yar_zoo/data_stores/news_store.dart';
 import 'package:flutter_yar_zoo/views/full_news_viewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
@@ -237,23 +238,4 @@ class _NewsListItem extends StatelessWidget {
     );
   }
 
-}
-
-
-///Singleton store of news
-class NewsStore {
-  List<News> _news = [];
-  static NewsStore _sStore;
-  static NewsStore getStore() {
-    if (_sStore == null)
-      _sStore = new NewsStore();
-
-    return _sStore;
-  }
-
-  void updateNews(List<News> news) {
-    _news = news;
-  }
-
-  List<News> get news => _news;
 }
