@@ -53,7 +53,6 @@ class _NewsViewState extends State<NewsView> {
     return FutureBuilder<List<News>>(
       future: news,
       builder: (context, snapshot) {
-        print(NewsStore.getStore().news.length);
 
         //If news have been downloaded but internet disabled
         if (NewsStore.getStore().news.isNotEmpty) {
@@ -132,7 +131,6 @@ class _NewsViewState extends State<NewsView> {
         && connectivityResult != ConnectivityResult.wifi)
       throw Exception('Проверьте интернет соединение');
 
-    print('Internet exist');
 
     final response = await http.get('http://yar-zoo.ru/home/news.html');
 
