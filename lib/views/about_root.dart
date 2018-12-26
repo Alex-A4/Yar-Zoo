@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class AboutUsView extends StatelessWidget {
@@ -36,27 +37,23 @@ class AboutUsView extends StatelessWidget {
             child: Card(
               elevation: 5.0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius:   BorderRadius.circular(20.0),
                 side: BorderSide(color: Theme.of(context).accentColor, width: 2.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   //Button to open VK
-                  getIconButton('assets/vk.png', (){
-                  }),
+                  getIconButton('assets/vk.png', 'https://vk.com/zooyar'),
 
                   //Button to open Facebook
-                  getIconButton('assets/facebook.png', (){
-                  }),
+                  getIconButton('assets/facebook.png', 'https://www.facebook.com/yaroslavlzoo'),
 
                   //Button to open Instagram
-                  getIconButton('assets/instagram.png', (){
-                  }),
+                  getIconButton('assets/instagram.png', 'https://www.instagram.com/yaroslavlzoo/'),
 
                   //Button to open Youtube
-                  getIconButton('assets/youtube.png', (){
-                  }),
+                  getIconButton('assets/youtube.png', 'https://www.youtube.com/channel/UC_2z1FBwooyqMcUTYrzjyiw/about'),
                 ],
               ),
             ),
@@ -67,9 +64,15 @@ class AboutUsView extends StatelessWidget {
   }
 
   /// Uses to define image of social networks
-  Widget getIconButton(String source, VoidCallback onPressed) {
+  Widget getIconButton(String source, String url) {
     return IconButton(
-      onPressed: onPressed,
+      onPressed: () async {
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
+      },
       iconSize: 50.0,
       icon: Image(
         image: AssetImage(source),
