@@ -15,9 +15,6 @@ class NewsView extends StatefulWidget {
 
 
 class _NewsViewState extends State<NewsView> {
-  //List with news
-  List<News> _newsList = [];
-
   String _title = 'Новости';
 
   Future<List<News>> news;
@@ -54,9 +51,16 @@ class _NewsViewState extends State<NewsView> {
     return FutureBuilder<List<News>>(
       future: news,
       builder: (context, snapshot) {
+        print(NewsStore.getStore().news.length);
+
+        //If news have been downloaded but internet disabled
+        if (NewsStore.getStore().news.isNotEmpty) {
+          return getListView();
+        }
+
         //If downloading finished
         if (snapshot.hasData) {
-          _newsList = snapshot.data;
+          NewsStore.getStore().updateNews(snapshot.data);
           _title = 'Новости';
           return getListView();
         } else if (snapshot.hasError) {
@@ -98,9 +102,9 @@ class _NewsViewState extends State<NewsView> {
     return ListView.builder(
         key: PageStorageKey('NewsKey'),
         padding: EdgeInsets.only(top: 8.0),
-        itemCount: _newsList.length,
+        itemCount: NewsStore.getStore().news.length,
         itemBuilder: (BuildContext context, int pos) {
-          return _NewsListItem(_newsList[pos]);
+          return _NewsListItem(NewsStore.getStore().news[pos]);
         }
     );
   }
@@ -234,6 +238,23 @@ class _NewsListItem extends StatelessWidget {
 }
 
 
+///Singleton store of news
+class NewsStore {
+  List<News> _news = [];
+  static NewsStore _sStore;
+  static NewsStore getStore() {
+    if (_sStore == null)
+      _sStore = new NewsStore();
+
+    return _sStore;
+  }
+
+  void updateNews(List<News> news) {
+    _news = news;
+  }
+
+  List<News> get news => _news;
+}
 
 
 /// Class describes one news
