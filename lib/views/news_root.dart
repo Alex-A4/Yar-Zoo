@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../data_stores/news.dart';
 
 class NewsView extends StatefulWidget {
   NewsView({Key key}): super(key: key);
@@ -181,7 +182,7 @@ class _NewsListItem extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: Text(
-              _news._title,
+              _news.title,
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 15.0,
@@ -194,7 +195,7 @@ class _NewsListItem extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: Text(
-              _news._postDate,
+              _news.postDate,
               textAlign: TextAlign.start,
               style: TextStyle(
                   fontSize: 14.0,
@@ -221,7 +222,7 @@ class _NewsListItem extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: Text(
-              _news._description,
+              _news.description,
               textAlign: TextAlign.start,
               softWrap: true,
               style: TextStyle(
@@ -255,34 +256,4 @@ class NewsStore {
   }
 
   List<News> get news => _news;
-}
-
-
-/// Class describes one news
-class News {
-  final String _title;
-  final String _description;
-  final String _imageUrl;
-  final String _pageUrl;
-  final String _postDate;
-
-  News(this._title, this._description, this._imageUrl, this._postDate, this._pageUrl) :
-  assert(_title != null),
-  assert(_description != null),
-  assert(_imageUrl != null),
-  assert(_postDate != null),
-  assert (_pageUrl != null);
-
-
-  String get pageUrl => _pageUrl;
-
-  String get postDate => _postDate;
-
-  String get imageUrl => _imageUrl;
-
-  String get description => _description;
-
-  String get title => _title;
-
-
 }
