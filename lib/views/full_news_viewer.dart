@@ -78,61 +78,65 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
     );
   }
 
+
   //Getting list view which contains content
   Widget getListView() {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _fullNews.title,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      body: ListView(
-        key: PageStorageKey('FullNewsKey'),
+      body: CustomScrollView(
         shrinkWrap: true,
-        padding: EdgeInsets.only(bottom: 20),
-        children: <Widget>[
-          //HEAD IMAGE OF NEWS
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Image.network(
-              _fullNews.headerImageUrl,
-              fit: BoxFit.fitWidth,
+        key: PageStorageKey("FullNewsList"),
+        slivers: <Widget>[
+          //AppBar
+          SliverAppBar(
+            title: Text(
+                _fullNews.title,
             ),
-          ),
-
-          // TEXT OF NEWS
-          Container(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              _fullNews.text,
-              softWrap: true,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-
-          // CONTENT OF NEWS
-          Column(
-            children: _fullNews.imageUrls.map((link) =>
-            new Padding(
-              padding: EdgeInsets.only(left: 32, right: 32, top: 16),
-              child: Image.network(
-                link,
+            expandedHeight: 250,
+            //HEADER IMAGE
+            flexibleSpace: FlexibleSpaceBar(
+              background: Image.network(
+                _fullNews.headerImageUrl,
                 fit: BoxFit.fitWidth,
               ),
-            )
-            ).toList(),
+            ),
+          ),
+
+          //Content
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                // TEXT OF NEWS
+                Container(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Text(
+                    _fullNews.text,
+                    softWrap: true,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ),
+
+                // CONTENT OF NEWS
+                Column(
+                  children: _fullNews.imageUrls.map((link) =>
+                  new Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32, top: 16),
+                    child: Image.network(
+                      link,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  )
+                  ).toList(),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-
-
 
   ///Asynchronous fetching data from url
   /// and then parse data
