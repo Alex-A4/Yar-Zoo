@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/views/full_news_viewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NewsView extends StatefulWidget {
   NewsView({Key key}): super(key: key);
@@ -16,6 +18,8 @@ class _NewsViewState extends State<NewsView> {
   //List with news
   List<News> _newsList = [];
 
+  String _title = 'Новости';
+
   var listKey = Key('ListViewKey');
   Future<List<News>> news;
 
@@ -23,9 +27,14 @@ class _NewsViewState extends State<NewsView> {
   @override
   void initState() {
     super.initState();
+    startDownloading();
+  }
+
+  void startDownloading(){
     news = fetchNews();
   }
 
+  //TODO: fix title displaying
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,20 +43,7 @@ class _NewsViewState extends State<NewsView> {
           child: Image(image: AssetImage('assets/logo.png'),),
           padding: EdgeInsets.only(left:10.0, top:5.0, bottom: 5.0),
         ),
-        title: Text('Новости'),
-        actions: <Widget>[
-          // Action for open settings
-          IconButton(
-            icon: Icon(Icons.settings),
-            //TODO: add logic to start settings
-            onPressed: (){
-              Scaffold.of(context).removeCurrentSnackBar();
-              Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text('Settings clicked'), duration: Duration(seconds: 2))
-              );
-            },
-          ),
-        ],
+        title: Text(_title),
       ),
       body: getFutureBuilder(),
 
@@ -63,21 +59,46 @@ class _NewsViewState extends State<NewsView> {
         //If downloading finished
         if (snapshot.hasData) {
           _newsList = snapshot.data;
+          _title = 'Новости';
           return getListView();
         } else if (snapshot.hasError) {
           // If error occurred
-          Scaffold.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(snapshot.error.toString()),
-                  backgroundColor: Colors.red
-              )
+          Fluttertoast.showToast(
+            msg: 'Проверьте интернет соединение',
+            textColor: Colors.white,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            timeInSecForIos: 2,
           );
+//            Scaffold.of(context).showSnackBar(
+//                SnackBar(
+//                    content: Text(snapshot.error.toString()),
+//                    backgroundColor: Colors.red
+//                ));
+          _title = 'Ожидание сети..';
+          return getUpdateScreen();
         }
 
         //Until downloading finishes, show progress bar
+        _title = 'Соединение..';
         return getProgressBar();
       },
     );
+  }
+
+  Widget getUpdateScreen() {
+    return Center(
+            child: IconButton(
+              iconSize: 50.0,
+              icon: Icon(Icons.update),
+              onPressed: (){
+                setState(() {
+                  _title = 'Новости';
+                  startDownloading();
+                });
+              },
+            ),
+          );
   }
 
   Widget getListView() {
@@ -104,6 +125,15 @@ class _NewsViewState extends State<NewsView> {
 
   /// Fetching news from web-site
   Future<List<News>> fetchNews() async {
+    //Checking internet connection
+    var connectivityResult = await (new Connectivity().checkConnectivity());
+
+    if (connectivityResult != ConnectivityResult.mobile
+        && connectivityResult != ConnectivityResult.wifi)
+      throw Exception('Проверьте интернет соединение');
+
+    print('Internet exist');
+
     final response = await http.get('http://yar-zoo.ru/home/news.html');
 
     if (response.statusCode == 200) {
