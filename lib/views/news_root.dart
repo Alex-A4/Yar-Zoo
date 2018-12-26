@@ -68,11 +68,6 @@ class _NewsViewState extends State<NewsView> {
             backgroundColor: Colors.red,
             timeInSecForIos: 2,
           );
-//            Scaffold.of(context).showSnackBar(
-//                SnackBar(
-//                    content: Text(snapshot.error.toString()),
-//                    backgroundColor: Colors.red
-//                ));
           _title = 'Ожидание сети..';
           return getUpdateScreen();
         }
