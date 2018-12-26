@@ -20,7 +20,6 @@ class _NewsViewState extends State<NewsView> {
 
   String _title = 'Новости';
 
-  var listKey = Key('ListViewKey');
   Future<List<News>> news;
 
 
@@ -54,7 +53,6 @@ class _NewsViewState extends State<NewsView> {
   Widget getFutureBuilder() {
     return FutureBuilder<List<News>>(
       future: news,
-
       builder: (context, snapshot) {
         //If downloading finished
         if (snapshot.hasData) {
@@ -103,7 +101,7 @@ class _NewsViewState extends State<NewsView> {
 
   Widget getListView() {
     return ListView.builder(
-        key: listKey,
+        key: PageStorageKey('NewsKey'),
         padding: EdgeInsets.only(top: 8.0),
         itemCount: _newsList.length,
         itemBuilder: (BuildContext context, int pos) {
