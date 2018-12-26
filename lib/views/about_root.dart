@@ -70,7 +70,7 @@ class AboutUsView extends StatelessWidget {
         if (await canLaunch(url)) {
           await launch(url);
         } else {
-          throw 'Could not launch $url';
+          print ('Could not launch $url');
         }
       },
       iconSize: 50.0,
