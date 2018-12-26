@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/full_news.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 
@@ -28,18 +29,40 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: Container(
+          child: Image(image: AssetImage('assets/logo.png'),),
+          padding: EdgeInsets.only(left:10.0, top:5.0, bottom: 5.0),
+        ),
+        title: Text(
+          _fullNews == null ? 'Соединение..' : _fullNews.title,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      body: getFutureBuilder(),
+    );
+  }
+
+  Widget getFutureBuilder() {
     return FutureBuilder(
       future: _newsFuture,
       builder: (context, snapshot){
         //If data downloaded
         if (snapshot.hasData) {
           _fullNews = snapshot.data;
-          return getScaffold();
+          return getListView();
         } else if (snapshot.hasError) {
           //If error occurred
-          Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text('Проверьте интернет соединение'), backgroundColor: Colors.red,),
+          Fluttertoast.showToast(
+            msg: 'Проверьте интернет соединение',
+            textColor: Colors.white,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            timeInSecForIos: 2,
           );
+
           Navigator.pop(context);
         }
 
@@ -50,36 +73,20 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
   }
 
   Widget getCircularProgress() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Соединение..'),
-      ),
-      body: Center(
+    return Center(
         child: CircularProgressIndicator(
           backgroundColor: Colors.green[700],
           strokeWidth: 3.0,
         ),
-      ),
-    );
-  }
-
-  Widget getScaffold() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _fullNews.title,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      body: getListView(),
     );
   }
 
   //Getting list view which contains content
   Widget getListView() {
     return ListView(
+      key: PageStorageKey('FullNewsKey'),
       shrinkWrap: true,
+      padding: EdgeInsets.only(bottom: 20),
       children: <Widget>[
 
         //HEAD IMAGE OF NEWS
@@ -105,36 +112,50 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
         ),
 
         // CONTENT OF NEWS
-        Container(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Column(
-
-          ),
+        Column(
+          children: _fullNews.imageUrls.map((link) =>
+            new Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 16),
+              child: Image.network(
+                link,
+                fit: BoxFit.fitWidth,
+              ),
+            )
+          ).toList(),
         ),
       ],
     );
   }
 
+
   Future<FullNews> fetchFullNews(String url) async {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-
+      List<String> imagesUrl = [];
       //Parsing data from page
-      var dateParse = parse(response.body).getElementsByClassName('element-itempublish_up');
-      var descr = parse(response.body).getElementsByClassName('element-textarea');
-      var docs = parse(response.body).getElementsByClassName('item-image');
+      var titleAndImage = parse(response.body).getElementsByClassName('jbimage-link');
+      var descr = parse(response.body).getElementsByClassName('element-textarea')[0].getElementsByTagName('p');
+      var gallery = parse(response.body).getElementsByClassName('element-jbgallery');
 
-      for (int i = 0; i < docs.length; i++) {
-        var pageHref = docs[i].getElementsByTagName('a')[0].attributes['href'];
-        var title = docs[i].getElementsByTagName('a')[0].attributes['title'];
-        var image = docs[i].getElementsByTagName('img')[0].attributes['src'];
-        var description = descr[i].getElementsByTagName('p')[0].text;
-        var date = dateParse[i].text.trim();
+      //Parsing gallery of photos if it is exist in a news
+      if (gallery.length > 0) {
+        gallery = gallery[0].getElementsByTagName('a');
+        //Adding images to list
+        for (int i = 0; i < gallery.length; i++)
+          imagesUrl.add(gallery[i].attributes['href']);
       }
 
-      FullNews news = new FullNews('','','',[]);
-      print('DONE');
+      var title = titleAndImage[0].attributes['title'];
+      var image = titleAndImage[0].attributes['href'];
+
+      //Building description
+      String description = '';
+      for (int i = 0; i < descr.length; i++) {
+        description += descr[i].text + '\n';
+      }
+
+      FullNews news = new FullNews(image,title,description,imagesUrl);
       return news;
     } else throw Exception('Проверьте интернет соединение');
   }
