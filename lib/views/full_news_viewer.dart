@@ -83,11 +83,12 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
   Widget getListView() {
     return Scaffold(
       body: CustomScrollView(
-        shrinkWrap: true,
         key: PageStorageKey("FullNewsList"),
         slivers: <Widget>[
           //AppBar
           SliverAppBar(
+            pinned: true,
+            elevation: 3,
             title: Text(
                 _fullNews.title,
             ),
