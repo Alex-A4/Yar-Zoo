@@ -124,7 +124,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
                 Column(
                   children: _fullNews.imageUrls.map((link) =>
                   new Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32, top: 16),
+                    padding: EdgeInsets.only(left: 32, right: 32, bottom: 16),
                     child: Image.network(
                       link,
                       fit: BoxFit.fitWidth,
