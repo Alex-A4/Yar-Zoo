@@ -30,17 +30,6 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          child: Image(image: AssetImage('assets/logo.png'),),
-          padding: EdgeInsets.only(left:10.0, top:5.0, bottom: 5.0),
-        ),
-        title: Text(
-          _fullNews == null ? 'Соединение..' : _fullNews.title,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
       body: getFutureBuilder(),
     );
   }
@@ -72,48 +61,63 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
     );
   }
 
+  //Getting progress bar until downloading finish
   Widget getCircularProgress() {
-    return Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Соединение..'
+        ),
+      ),
+      body: Center(
         child: CircularProgressIndicator(
           backgroundColor: Colors.green[700],
           strokeWidth: 3.0,
         ),
+      ),
     );
   }
 
   //Getting list view which contains content
   Widget getListView() {
-    return ListView(
-      key: PageStorageKey('FullNewsKey'),
-      shrinkWrap: true,
-      padding: EdgeInsets.only(bottom: 20),
-      children: <Widget>[
-
-        //HEAD IMAGE OF NEWS
-        Container(
-          padding: EdgeInsets.all(16.0),
-          child: Image.network(
-            _fullNews.headerImageUrl,
-            fit: BoxFit.fitWidth,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          _fullNews.title,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
         ),
-
-        // TEXT OF NEWS
-        Container(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Text(
-            _fullNews.text,
-            softWrap: true,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 17.0,
+      ),
+      body: ListView(
+        key: PageStorageKey('FullNewsKey'),
+        shrinkWrap: true,
+        padding: EdgeInsets.only(bottom: 20),
+        children: <Widget>[
+          //HEAD IMAGE OF NEWS
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: Image.network(
+              _fullNews.headerImageUrl,
+              fit: BoxFit.fitWidth,
             ),
           ),
-        ),
 
-        // CONTENT OF NEWS
-        Column(
-          children: _fullNews.imageUrls.map((link) =>
+          // TEXT OF NEWS
+          Container(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Text(
+              _fullNews.text,
+              softWrap: true,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+
+          // CONTENT OF NEWS
+          Column(
+            children: _fullNews.imageUrls.map((link) =>
             new Padding(
               padding: EdgeInsets.only(left: 32, right: 32, top: 16),
               child: Image.network(
@@ -121,13 +125,17 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
                 fit: BoxFit.fitWidth,
               ),
             )
-          ).toList(),
-        ),
-      ],
+            ).toList(),
+          ),
+        ],
+      ),
     );
   }
 
 
+
+  ///Asynchronous fetching data from url
+  /// and then parse data
   Future<FullNews> fetchFullNews(String url) async {
     final response = await http.get(url);
 
