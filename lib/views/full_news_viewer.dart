@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yar_zoo/data_stores/full_news.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 
@@ -66,7 +67,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _fullNews._title,
+          _fullNews.title,
           softWrap: false,
           overflow: TextOverflow.ellipsis,
         ),
@@ -85,7 +86,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
         Container(
           padding: EdgeInsets.all(16.0),
           child: Image.network(
-            _fullNews._headerImageUrl,
+            _fullNews.headerImageUrl,
             fit: BoxFit.fitWidth,
           ),
         ),
@@ -94,7 +95,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
         Container(
           padding: EdgeInsets.only(left: 16.0, right: 16.0),
           child: Text(
-            _fullNews._text,
+            _fullNews.text,
             softWrap: true,
             style: TextStyle(
               color: Colors.black,
@@ -137,23 +138,4 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
       return news;
     } else throw Exception('Проверьте интернет соединение');
   }
-}
-
-
-/// Class describes news with full content
-class FullNews {
-  final String _headerImageUrl;
-  final String _title;
-  final String _text;
-  final List<String> _imageUrls;
-
-  FullNews(this._headerImageUrl, this._title, this._text, this._imageUrls);
-
-  List<String> get imageUrls => _imageUrls;
-
-  String get text => _text;
-
-  String get title => _title;
-
-  String get headerImageUrl => _headerImageUrl;
 }
