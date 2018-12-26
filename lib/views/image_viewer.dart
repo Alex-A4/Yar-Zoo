@@ -15,9 +15,11 @@ class ImageViewer extends StatelessWidget {
 
       body: Container(
         color: Colors.black,
-        child: Image.network(
-          _imageUrl[0],
-          fit: BoxFit.contain,
+        child: Center(
+          child: Image.network(
+            _imageUrl[0],
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
