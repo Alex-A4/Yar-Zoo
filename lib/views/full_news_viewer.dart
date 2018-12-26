@@ -13,7 +13,6 @@ class FullNewsViewer extends StatefulWidget {
   _FullNewsViewerState createState() => _FullNewsViewerState();
 }
 
-// TODO: add slivers app bar
 class _FullNewsViewerState extends State<FullNewsViewer>{
   Future<FullNews> _newsFuture;
 
@@ -34,6 +33,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
     );
   }
 
+  //Future which solve what widget should be displayed
   Widget getFutureBuilder() {
     return FutureBuilder(
       future: _newsFuture,
@@ -52,6 +52,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
             timeInSecForIos: 2,
           );
 
+          // Close news if there is no connectivity
           Navigator.pop(context);
         }
 
