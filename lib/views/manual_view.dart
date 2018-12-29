@@ -110,13 +110,9 @@ class ManualCategoryListItem extends StatelessWidget {
               _item.description,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20.0,
+                fontSize: 18.0,
                 color: Colors.black,
               ),
-            ),
-
-            SizedBox(
-              height: 20,
             ),
           ],
         ),
