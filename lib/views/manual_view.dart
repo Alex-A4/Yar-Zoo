@@ -46,6 +46,7 @@ class _ManualCategoryViewState extends State<ManualCategoryView> {
             return GridView.builder(
               padding: EdgeInsets.only(top: 8.0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 15,
                 crossAxisCount: 2,
                 crossAxisSpacing: 15,
               ),
