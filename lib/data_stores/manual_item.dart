@@ -1,4 +1,5 @@
 
+
 ///Class describes one element from manual
 class ManualItem {
   final String _imageUrl;
