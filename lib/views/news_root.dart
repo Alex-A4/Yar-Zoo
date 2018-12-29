@@ -147,70 +147,75 @@ class _NewsListItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => FullNewsViewer(_news.pageUrl)
+              builder: (context) => FullNewsViewer(_news.pageUrl)
           ),
         );
       },
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // Text with title of news
-          Container(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              _news.title,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.black,
+      child: Card(
+        margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // Text with title of news
+            Container(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+              child: Text(
+                _news.title,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black,
+                ),
               ),
             ),
-          ),
 
-          // Text with date
-          Container(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              _news.postDate,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.black45
+            // Text with date
+            Container(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Text(
+                _news.postDate,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black45
+                ),
               ),
             ),
-          ),
 
-          //An image which placed into the center
-          Center( child: Container(
-            padding: EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              child: Image.network(
-                _news.imageUrl,
-                width: 200.0,
-                fit: BoxFit.fitWidth,
+            //An image which placed into the center
+            Center(
+              child: Container(
+                padding: EdgeInsets.only(top: 10, bottom: 10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  child: Image.network(
+                    _news.imageUrl,
+                    width: MediaQuery.of(context).size.width - 150,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
               ),
             ),
-          ),
-          ),
 
-          // A description of news
-          Container(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              _news.description,
-              textAlign: TextAlign.start,
-              softWrap: true,
-              style: TextStyle(
-                  fontSize: 17.0,
-                  color: Colors.black45
+            // A description of news
+            Container(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              child: Text(
+                _news.description,
+                textAlign: TextAlign.start,
+                softWrap: true,
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Colors.black45
+                ),
               ),
             ),
-          ),
-          Divider(),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 
