@@ -1,6 +1,7 @@
 
 import 'package:flutter_yar_zoo/data_stores/manual_item.dart';
 
+
 ///Singleton store of manual elements
 class ManualStore {
   static ManualStore _store;
