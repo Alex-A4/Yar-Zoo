@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/full_news.dart';
+import 'package:flutter_yar_zoo/widgets/clickable_image.dart';
 import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -123,10 +124,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
                   children: _fullNews.imageUrls.map((link) =>
                   new Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, bottom: 16),
-                    child: Image.network(
-                      link,
-                      fit: BoxFit.fitWidth,
-                    ),
+                    child: ClickableImage(link),
                   )
                   ).toList(),
                 ),
