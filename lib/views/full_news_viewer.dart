@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/full_news.dart';
+import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
@@ -71,10 +72,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
         ),
       ),
       body: Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.green[700],
-          strokeWidth: 3.0,
-        ),
+        child: getProgressBar(),
       ),
     );
   }
