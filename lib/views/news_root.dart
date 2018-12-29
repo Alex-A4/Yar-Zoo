@@ -35,7 +35,6 @@ class _NewsViewState extends State<NewsView> {
     });
   }
 
-  //TODO: fix title displaying
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +92,7 @@ class _NewsViewState extends State<NewsView> {
     );
   }
 
+  //TODO: add RefreshIndicator to update news
   Widget getListView() {
     return ListView.builder(
         key: PageStorageKey('NewsKey'),
