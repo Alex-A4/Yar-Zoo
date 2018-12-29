@@ -16,5 +16,9 @@ class ManualStore {
     return _store;
   }
 
+  void updateManual(List<ManualItem> list) {
+    _items = list;
+  }
+
   List<ManualItem> get items => _items;
 }
