@@ -95,11 +95,11 @@ class _ManualCategoryViewState extends State<ManualCategoryView> {
   Widget getGridView() {
     return GridView.builder(
       key: PageStorageKey('ManualKey'),
-      padding: EdgeInsets.only(top: 8.0),
+      padding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisSpacing: 15,
+        mainAxisSpacing: 10,
         crossAxisCount: 2,
-        crossAxisSpacing: 15,
+        crossAxisSpacing: 10,
       ),
       itemCount: ManualStore.getStore().items.length,
       itemBuilder: (BuildContext context, int pos){
@@ -126,7 +126,7 @@ class ManualCategoryListItem extends StatelessWidget {
 
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(9),
         ),
         elevation: 5.0,
 
@@ -136,7 +136,6 @@ class ManualCategoryListItem extends StatelessWidget {
             //Image of manual
             Image.network(
               _item.imageUrl,
-              width: 200.0,
               fit: BoxFit.fitWidth,
             ),
 
@@ -182,6 +181,7 @@ Future<List<ManualItem>> fetchData() async {
       String imageUrl = elements[i].getElementsByTagName('img')[0].attributes['src'];
       String description = body[0].attributes['title'].replaceFirst('<br/>', '\n');
       String pageUrl = 'http://yar-zoo.ru${body[0].attributes['href']}';
+
       items.add(new ManualItem(imageUrl, description, pageUrl));
     }
 
