@@ -145,11 +145,8 @@ Future<List<ManualItem>> fetchData() async {
       var body = elements[i].getElementsByTagName('a');
 
       String imageUrl = elements[i].getElementsByTagName('img')[0].attributes['src'];
-      print(imageUrl);
-      String description = body[0].attributes['title'];
-      print(description);
-      String pageUrl = 'http://yar-zoo.ru${body[0].attributes['href']}'; //.replaceFirst('<br/>', '\n')
-      print(pageUrl);
+      String description = body[0].attributes['title'].replaceFirst('<br/>', '\n');
+      String pageUrl = 'http://yar-zoo.ru${body[0].attributes['href']}';
       items.add(new ManualItem(imageUrl, description, pageUrl));
     }
 
