@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/manual_item.dart';
@@ -18,12 +19,19 @@ class ManualCategoryView extends StatefulWidget{
 
 class _ManualCategoryViewState extends State<ManualCategoryView> {
   Future<List<ManualItem>> _items;
+  String _title = 'Справочник';
 
 
   @override
   void initState() {
     super.initState();
-    _items = fetchData();
+    startDownloading();
+  }
+
+  void startDownloading(){
+    setState(() {
+      _items = fetchData();
+    });
   }
 
   @override
@@ -34,43 +42,69 @@ class _ManualCategoryViewState extends State<ManualCategoryView> {
           child: Image(image: AssetImage('assets/logo.png'),),
           padding: EdgeInsets.only(left:10.0, top:5.0, bottom: 5.0),
         ),
-        title: Text('Справочник'),
+        title: Text(_title),
       ),
-      body: FutureBuilder<List<ManualItem>>(
-        future: _items,
-        builder: (context, snapshot){
-          //If downloading finished
-          if (snapshot.hasData) {
-            ManualStore.getStore().updateManual((snapshot.data));
-//            _title = 'Новости';
-            return GridView.builder(
-              padding: EdgeInsets.only(top: 8.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 15,
-                crossAxisCount: 2,
-                crossAxisSpacing: 15,
-              ),
-              itemCount: ManualStore.getStore().items.length,
-              itemBuilder: (BuildContext context, int pos){
-                return ManualCategoryListItem(ManualStore.getStore().items[pos]);
-              },
-            );
-          } else if (snapshot.hasError) {
-            // If error occurred
-            Fluttertoast.showToast(
-              msg: snapshot.error.toString().replaceFirst('Exception: ', ''),
-              textColor: Colors.white,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.red,
-              timeInSecForIos: 2,
-            );
-//            _title = 'Ожидание сети..';
-            return Text('WOW');
-          }
+      body: getFutureBuilder(),
+    );
+  }
 
-          return Text('Downloading');
-        },
+  //Getting future builder which solve what to show
+  Widget getFutureBuilder(){
+    return FutureBuilder<List<ManualItem>>(
+      future: _items,
+      builder: (context, snapshot){
+        //If manual have been downloaded but internet disabled
+        if (ManualStore.getStore().items.isNotEmpty) {
+          _title = 'Справочник';
+          return getGridView();
+        }
+
+        //If downloading finished
+        if (snapshot.hasData) {
+          ManualStore.getStore().updateManual((snapshot.data));
+          _title = 'Справочник';
+          return getGridView();
+        } else if (snapshot.hasError) {
+          // If error occurred
+          Fluttertoast.showToast(
+            msg: snapshot.error.toString().replaceFirst('Exception: ', ''),
+            textColor: Colors.white,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            timeInSecForIos: 2,
+          );
+
+          _title = 'Ожидание сети..';
+          return getUpdateScreen(() {
+            setState(() {
+              _title = 'Справочник';
+              startDownloading();
+            });
+          });
+        }
+
+        //Until downloading finishes, show progress bar
+        _title = 'Соединение..';
+        return getProgressBar();
+      },
+    );
+  }
+
+
+  ///GridView with the items of manual
+  Widget getGridView() {
+    return GridView.builder(
+      key: PageStorageKey('ManualKey'),
+      padding: EdgeInsets.only(top: 8.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        mainAxisSpacing: 15,
+        crossAxisCount: 2,
+        crossAxisSpacing: 15,
       ),
+      itemCount: ManualStore.getStore().items.length,
+      itemBuilder: (BuildContext context, int pos){
+        return ManualCategoryListItem(ManualStore.getStore().items[pos]);
+      },
     );
   }
 }
