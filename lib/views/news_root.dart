@@ -29,7 +29,9 @@ class _NewsViewState extends State<NewsView> {
   }
 
   void startDownloading(){
-    news = fetchNews();
+    setState(() {
+      news = fetchNews();
+    });
   }
 
   //TODO: fix title displaying
