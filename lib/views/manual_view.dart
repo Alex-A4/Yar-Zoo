@@ -91,7 +91,7 @@ class ManualCategoryListItem extends StatelessWidget {
 
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(7),
         ),
         elevation: 5.0,
 
