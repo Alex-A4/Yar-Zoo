@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // Getting circular progress bar
 Widget getProgressBar() {
@@ -19,5 +20,15 @@ Widget getUpdateScreen(VoidCallback action) {
       icon: Icon(Icons.update),
       onPressed: action,
     ),
+  );
+}
+
+void showToast(String text) {
+  Fluttertoast.showToast(
+    msg: text,
+    textColor: Colors.white,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.red,
+    timeInSecForIos: 2,
   );
 }
