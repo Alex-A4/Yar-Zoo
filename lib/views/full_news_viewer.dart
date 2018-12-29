@@ -24,7 +24,6 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
   @override
   void initState() {
     super.initState();
-    print(widget._newsUrl);
     _newsFuture = fetchFullNews(widget._newsUrl);
   }
 
