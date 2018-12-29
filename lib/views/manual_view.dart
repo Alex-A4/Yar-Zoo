@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_yar_zoo/views/animals_category.dart';
 import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
@@ -120,8 +121,12 @@ class ManualCategoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // TODO: add logic to launch page with full info about category of animals
       onTap: (){
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AnimalsCategory(_item.pageUrl),
+          )
+        );
       },
 
       child: Card(
