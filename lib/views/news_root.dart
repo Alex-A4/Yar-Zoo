@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/news_store.dart';
 import 'package:flutter_yar_zoo/views/full_news_viewer.dart';
+import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:connectivity/connectivity.dart';
@@ -77,7 +78,12 @@ class _NewsViewState extends State<NewsView> {
             timeInSecForIos: 2,
           );
           _title = 'Ожидание сети..';
-          return getUpdateScreen();
+          return getUpdateScreen(() {
+            setState(() {
+              _title = 'Новости';
+              startDownloading();
+            });
+          });
         }
 
         //Until downloading finishes, show progress bar
@@ -85,21 +91,6 @@ class _NewsViewState extends State<NewsView> {
         return getProgressBar();
       },
     );
-  }
-
-  Widget getUpdateScreen() {
-    return Center(
-            child: IconButton(
-              iconSize: 50.0,
-              icon: Icon(Icons.update),
-              onPressed: (){
-                setState(() {
-                  _title = 'Новости';
-                  startDownloading();
-                });
-              },
-            ),
-          );
   }
 
   Widget getListView() {
@@ -110,16 +101,6 @@ class _NewsViewState extends State<NewsView> {
         itemBuilder: (BuildContext context, int pos) {
           return _NewsListItem(NewsStore.getStore().news[pos]);
         }
-    );
-  }
-
-  // Getting circular progress bar
-  Widget getProgressBar() {
-    return Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.green[700],
-        strokeWidth: 3.0,
-      ),
     );
   }
 
