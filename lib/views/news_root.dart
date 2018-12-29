@@ -70,7 +70,7 @@ class _NewsViewState extends State<NewsView> {
         } else if (snapshot.hasError) {
           // If error occurred
           Fluttertoast.showToast(
-            msg: 'Проверьте интернет соединение',
+            msg: snapshot.error.toString().replaceFirst('Exception: ', ''),
             textColor: Colors.white,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red,
@@ -131,7 +131,7 @@ class _NewsViewState extends State<NewsView> {
 
     if (connectivityResult != ConnectivityResult.mobile
         && connectivityResult != ConnectivityResult.wifi)
-      throw Exception('Проверьте интернет соединение');
+      throw Exception('Отсутствует интернет соединение');
 
 
     final response = await http.get('http://yar-zoo.ru/home/news.html');
