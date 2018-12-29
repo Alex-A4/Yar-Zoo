@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yar_zoo/data_stores/manual_item.dart';
+import 'package:flutter_yar_zoo/data_stores/manual_store.dart';
 
 
 
@@ -11,9 +13,6 @@ class ManualCategoryView extends StatefulWidget{
 }
 
 class _ManualCategoryViewState extends State<ManualCategoryView> {
-  // List of manuals items
-  List<ManualCategoryItem> _items = [new ManualCategoryItem('http://yar-zoo.ru/media/zoo/images/1_eed4da7fb73b9e64cff6542489251cfc.png', '','Млекопитающие\nMammal'),
-  new ManualCategoryItem('http://yar-zoo.ru/media/zoo/images/2_f730f226f853bc48e21a2ab1f6a15320.png', '', 'Птицы\nAves')];
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +24,15 @@ class _ManualCategoryViewState extends State<ManualCategoryView> {
         ),
         title: Text('Справочник'),
       ),
-      body: ListView.builder(
+      body: GridView.builder(
         padding: EdgeInsets.only(top: 8.0),
-        itemCount: _items.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 15,
+        ),
+        itemCount: ManualStore.getStore().items.length,
         itemBuilder: (BuildContext context, int pos){
-          return ManualCategoryListItem(_items[pos]);
+          return ManualCategoryListItem(ManualStore.getStore().items[pos]);
         },
       ),
     );
@@ -39,59 +42,50 @@ class _ManualCategoryViewState extends State<ManualCategoryView> {
 
 /// One item of list from manual
 class ManualCategoryListItem extends StatelessWidget {
-  final ManualCategoryItem _item;
+  final ManualItem _item;
 
   ManualCategoryListItem(this._item);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // TODO: add logic to start page with full info about manuals
+      // TODO: add logic to launch page with full info about category of animals
       onTap: (){
       },
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          //Image of manual
-          Image.network(
-            _item.imageUrl,
-            width: 200.0,
-            fit: BoxFit.fitWidth,
-          ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        elevation: 5.0,
 
-          //Description of manual
-          Text(
-            _item._description,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.black,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            //Image of manual
+            Image.network(
+              _item.imageUrl,
+              width: 200.0,
+              fit: BoxFit.fitWidth,
             ),
-          ),
 
-          SizedBox(
-            height: 20,
-          ),
-        ],
+            //Description of manual
+            Text(
+              _item.description,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.black,
+              ),
+            ),
+
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-}
-
-
-/// Class describes one element of manual
-class ManualCategoryItem {
-  final String _imageUrl;
-  final String _pageUrl;
-  final String _description;
-
-  ManualCategoryItem(this._imageUrl, this._pageUrl, this._description);
-
-  String get description => _description;
-
-  String get pageUrl => _pageUrl;
-
-  String get imageUrl => _imageUrl;
 }
