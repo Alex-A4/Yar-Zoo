@@ -69,13 +69,8 @@ class _NewsViewState extends State<NewsView> {
           return getListView();
         } else if (snapshot.hasError) {
           // If error occurred
-          Fluttertoast.showToast(
-            msg: snapshot.error.toString().replaceFirst('Exception: ', ''),
-            textColor: Colors.white,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.red,
-            timeInSecForIos: 2,
-          );
+          showToast(snapshot.error.toString().replaceFirst('Exception: ', ''));
+
           _title = 'Ожидание сети..';
           return getUpdateScreen(() {
             setState(() {

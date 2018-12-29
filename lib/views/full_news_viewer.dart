@@ -45,13 +45,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
           return getListView();
         } else if (snapshot.hasError) {
           //If error occurred
-          Fluttertoast.showToast(
-            msg: 'Проверьте интернет соединение',
-            textColor: Colors.white,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.red,
-            timeInSecForIos: 2,
-          );
+          showToast('Проверьте интернет соединение');
 
           // Close news if there is no connectivity
           Navigator.pop(context);
