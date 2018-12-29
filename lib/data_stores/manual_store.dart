@@ -6,7 +6,7 @@ import 'package:flutter_yar_zoo/data_stores/manual_item.dart';
 class ManualStore {
   static ManualStore _store;
 
-  List<ManualItem> _items;
+  List<ManualItem> _items = [];
 
   // Store getter
   static ManualStore getStore() {
