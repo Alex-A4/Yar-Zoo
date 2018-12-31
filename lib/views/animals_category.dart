@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/animals_category_data.dart';
+import 'package:flutter_yar_zoo/data_stores/manual_item.dart';
 import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
@@ -8,9 +9,9 @@ import 'package:connectivity/connectivity.dart';
 
 ///Class to display list of animals by specified category
 class AnimalsCategory extends StatefulWidget {
-  final String _pageUrl;
+  final ManualItem _manualItem;
 
-  AnimalsCategory(this._pageUrl);
+  AnimalsCategory(this._manualItem);
 
   @override
   _AnimalsCategoryState createState() => _AnimalsCategoryState();
@@ -23,7 +24,7 @@ class _AnimalsCategoryState extends State<AnimalsCategory> {
   @override
   void initState() {
     super.initState();
-    _animals = fetchData(widget._pageUrl);
+    _animals = fetchData(widget._manualItem.pageUrl);
   }
   @override
   Widget build(BuildContext context) {
@@ -39,15 +40,14 @@ class _AnimalsCategoryState extends State<AnimalsCategory> {
       builder: (context, snapshot){
         //If data downloaded
         if (snapshot.hasData) {
-          List<AnimalCategory> list = snapshot.data;
           AnimalCategoryStore.getStore().updateAnimals(snapshot.data);
 
           //If count of animals more then 5, then show like grid else like list
           return Scaffold(
             appBar: AppBar(
-              title: Text('Животные'),
+              title: Text(widget._manualItem.description),
             ),
-            body: getGridView(list.length > 5),
+            body: getGridView(),
           );
         } else if (snapshot.hasError) {
           //If error occurred
@@ -81,12 +81,12 @@ class _AnimalsCategoryState extends State<AnimalsCategory> {
   //Getting grid view which contains content
   //If there is more then 5 entries then show like 2-column grid
   // else like 1-column grid
- Widget getGridView(bool isMoreThenFive) {
+ Widget getGridView() {
     return GridView.builder(
         key: PageStorageKey('AnimalsCategoryGridKey'),
-        padding: EdgeInsets.all(isMoreThenFive ? 8.0 : 16.0),
+        padding: EdgeInsets.all(8.0),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: isMoreThenFive ? 2 : 1,
+          crossAxisCount: 2,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
@@ -134,6 +134,7 @@ class _AnimalsCategoryItem extends StatelessWidget{
                 _category.title,
                 softWrap: true,
                 textAlign: TextAlign.center,
+                maxLines: 2,
                 style: TextStyle(
                   fontSize: 18.0,
                   color: Colors.black,
@@ -170,11 +171,8 @@ Future<List<AnimalCategory>> fetchData(String url) async {
 
     for (int i = 0; i < body.length; i++) {
       String title = body[i].getElementsByTagName('a')[0].attributes['title'];
-      print(title);
       String pageUrl = body[i].getElementsByTagName('a')[0].attributes['href'];
-      print(pageUrl);
       String imageUrl = body[i].getElementsByTagName('img')[0].attributes['src'];
-      print(imageUrl);
 
       animals.add(new AnimalCategory(pageUrl, imageUrl, title));
     }
