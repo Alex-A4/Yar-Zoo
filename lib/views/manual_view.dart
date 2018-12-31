@@ -118,7 +118,7 @@ class ManualCategoryListItem extends StatelessWidget {
       onTap: (){
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AnimalsCategory(_item.pageUrl),
+            builder: (context) => AnimalsCategory(_item),
           )
         );
       },
