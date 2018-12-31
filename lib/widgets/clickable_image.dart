@@ -2,33 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/views/image_viewer.dart';
 
 
+///Getting the list of clickable images which onTap opens
+/// ImageViewer by the selected image
+class ClickableImages extends StatelessWidget {
+  final List<String> _imageUrls;
 
-class ClickableImage extends StatelessWidget {
-  final String _imageUrl;
+  //Padding
+  final double pLeft;
+  final double pRight;
+  final double pTop;
+  final double pBottom;
 
-  ClickableImage(this._imageUrl);
+  ClickableImages(this._imageUrls, {
+    this.pLeft=0.0,
+    this.pBottom = 0.0,
+    this.pRight = 0.0,
+    this.pTop = 0.0,
+    });
 
-  //TODO: change logic of storing data
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) => ImageViewer([_imageUrl], 0),
+    return Column(
+      children:
+      //Creating list of images
+      _imageUrls.map((link) =>
+      new Padding(
+        padding: EdgeInsets.only(
+            left: pLeft, right: pRight, bottom: pBottom, top: pTop),
+        child: GestureDetector(
+          //Open the ImageViewer
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    ImageViewer(_imageUrls, _imageUrls.indexOf(link)),
+              ),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Image.network(
+              link,
+              fit: BoxFit.fitWidth,
+            ),
           ),
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
         ),
-        child: Image.network(
-          _imageUrl,
-          fit: BoxFit.fitWidth,
-        ),
-      ),
+      )
+      ).toList(),
     );
   }
 }
