@@ -113,14 +113,7 @@ class _FullNewsViewerState extends State<FullNewsViewer>{
                 ),
 
                 // CONTENT OF NEWS
-                Column(
-                  children: _fullNews.imageUrls.map((link) =>
-                  new Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32, bottom: 16),
-                    child: ClickableImage(link),
-                  )
-                  ).toList(),
-                ),
+                ClickableImages(_fullNews.imageUrls, pLeft: 32.0, pRight: 32.0, pTop: 16.0,),
               ],
             ),
           ),
