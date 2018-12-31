@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zoomable_image/zoomable_image.dart';
 
 class ImageViewer extends StatelessWidget {
   final List<String> _imageUrl;
@@ -21,9 +22,10 @@ class ImageViewer extends StatelessWidget {
           return Container(
             color: Colors.black,
             child: Center(
-              child: Image.network(
-                _imageUrl[pos],
-                fit: BoxFit.contain,
+              child: ZoomableImage(
+                NetworkImage(
+                  _imageUrl[pos],
+                ),
               ),
             ),
           );
