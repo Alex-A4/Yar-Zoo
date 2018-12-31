@@ -6,23 +6,28 @@ class ImageViewer extends StatelessWidget {
 
   ImageViewer(this._imageUrl, this._position);
 
-  //TODO: change displaying from 1 image to PageView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(_imageUrl.length.toString()),
       ),
-
-      body: Container(
-        color: Colors.black,
-        child: Center(
-          child: Image.network(
-            _imageUrl[_position],
-            fit: BoxFit.contain,
-          ),
+      body: PageView.builder(
+        itemCount: _imageUrl.length,
+        controller: PageController(
+          initialPage: _position,
         ),
+        itemBuilder: (context, pos) {
+          return Container(
+            color: Colors.black,
+            child: Center(
+              child: Image.network(
+                _imageUrl[pos],
+                fit: BoxFit.contain,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
