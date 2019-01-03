@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yar_zoo/data_stores/animals_category_data.dart';
 import 'package:flutter_yar_zoo/data_stores/manual_item.dart';
+import 'package:flutter_yar_zoo/views/animals_viewer.dart';
 import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
@@ -110,10 +111,9 @@ class _AnimalsCategoryItem extends StatelessWidget{
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-//        Navigator.of(context).push(
-//          //TODO: change null
-//          MaterialPageRoute(builder: (context) => null),
-//        );
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => AnimalsViewer(_category)),
+        );
       },
       child: Card(
         elevation: 5.0,
