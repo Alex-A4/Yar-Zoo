@@ -5,7 +5,6 @@ import 'package:flutter_yar_zoo/widgets/downloading_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../data_stores/news.dart';
 
 class NewsView extends StatefulWidget {
@@ -87,7 +86,6 @@ class _NewsViewState extends State<NewsView> {
     );
   }
 
-  //TODO: add RefreshIndicator to update news
   Widget getListView() {
     return ListView.builder(
         key: PageStorageKey('NewsKey'),
@@ -152,11 +150,7 @@ class _NewsListItem extends StatelessWidget {
         );
       },
 
-      child: Card(
-        margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-        elevation: 5.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        child: Column(
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // Text with title of news
@@ -213,9 +207,10 @@ class _NewsListItem extends StatelessWidget {
                 ),
               ),
             ),
+
+            Divider(color: Colors.black26),
           ],
         ),
-      )
     );
   }
 
