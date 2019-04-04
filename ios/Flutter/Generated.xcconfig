@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=/home/alexa4/FlutterSdk/flutter
-FLUTTER_APPLICATION_PATH=/home/alexa4/AndroidStudioProjects/flutter_test_app
+FLUTTER_APPLICATION_PATH=/home/alexa4/AndroidStudioProjects/flutter_yar_zoo
 FLUTTER_TARGET=lib/main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build/ios
