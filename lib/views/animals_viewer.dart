@@ -7,7 +7,7 @@ import 'package:html/parser.dart';
 
 
 class AnimalsViewer extends StatefulWidget {
-  final AnimalCategory  _category;
+  final AnimalCategory _category;
 
   AnimalsViewer(this._category);
 
@@ -15,7 +15,8 @@ class AnimalsViewer extends StatefulWidget {
   _AnimalsViewerState createState() => _AnimalsViewerState(_category);
 }
 
-class _AnimalsViewerState extends State<AnimalsViewer> with TickerProviderStateMixin{
+class _AnimalsViewerState extends State<AnimalsViewer>
+    with TickerProviderStateMixin {
   final AnimalCategory _category;
 
   Future<Animal> _data;
@@ -143,19 +144,20 @@ class _AnimalsViewerState extends State<AnimalsViewer> with TickerProviderStateM
                 child: TabBarView(
                   controller: _controller,
                   children: animal.tabElements.values.map((value) =>
-                      //Show dialog with full text by clicking on text
-                      GestureDetector(
-                        onTap: (){
-                          showDialog(
+                  //Show dialog with full text by clicking on text
+                  GestureDetector(
+                      onTap: () {
+                        showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    animal.tabElements.keys.toList()[_controller.index],
+                                  animal.tabElements.keys.toList()[_controller
+                                      .index],
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0)
+                                    borderRadius: BorderRadius.circular(10.0)
                                 ),
                                 content: SingleChildScrollView(
                                   child: ListBody(
@@ -164,8 +166,8 @@ class _AnimalsViewerState extends State<AnimalsViewer> with TickerProviderStateM
                                         value,
 
                                         style: TextStyle(
-                                          fontSize: 17.0,
-                                          color: Colors.black
+                                            fontSize: 17.0,
+                                            color: Colors.black
                                         ),
                                       ),
                                     ],
@@ -176,8 +178,8 @@ class _AnimalsViewerState extends State<AnimalsViewer> with TickerProviderStateM
                                     child: Text(
                                       'Супер!',
                                       style: TextStyle(
-                                        fontSize: 17.0,
-                                        color: Colors.black
+                                          fontSize: 17.0,
+                                          color: Colors.black
                                       ),
                                     ),
                                     onPressed: () {
@@ -187,30 +189,30 @@ class _AnimalsViewerState extends State<AnimalsViewer> with TickerProviderStateM
                                 ],
                               );
                             }
-                          );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              value,
-                              maxLines: 7,
-                              style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Colors.black
-                              ),
-                              overflow: TextOverflow.clip,
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            value,
+                            maxLines: 7,
+                            style: TextStyle(
+                                fontSize: 17.0,
+                                color: Colors.black
                             ),
-                            Text(
-                              'Читать далее...',
-                              style: TextStyle(
+                            overflow: TextOverflow.clip,
+                          ),
+                          Text(
+                            'Читать далее...',
+                            style: TextStyle(
                                 color: Colors.grey[400],
                                 fontSize: 17.0
-                              ),
-                            )
-                          ],
-                        )
+                            ),
+                          )
+                        ],
                       )
+                  )
                   ).toList(),
                 ),
               )
@@ -262,12 +264,14 @@ class _AnimalsViewerState extends State<AnimalsViewer> with TickerProviderStateM
       //Building items of tab
       for (int i = 0; i < itemRows.length; i++) {
         String tabName = itemRows[i].getElementsByTagName('a')[0].text.trim();
-        String tabText = textAreas[i+isRight].getElementsByTagName('p')[0].text.trim();
+        String tabText = textAreas[i + isRight].getElementsByTagName('p')[0]
+            .text.trim();
 
         tabItems['$tabName'] = tabText;
       }
 
       return new Animal(description.trim(), tabItems);
-    } else throw Exception('Проверьте интернет соединение');
+    } else
+      throw Exception('Проверьте интернет соединение');
   }
 }
